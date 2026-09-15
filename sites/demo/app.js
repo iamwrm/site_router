@@ -22,8 +22,8 @@ function tick() {
   render();
   if (remaining === 0) {
     stop();
-    toggle.textContent = 'Start another session ↗';
-    message.textContent = 'Nice work. Stretch your legs and take a break.';
+    toggle.textContent = 'Start another session';
+    message.textContent = 'Session complete. Time for a break.';
   }
 }
 toggle.addEventListener('click', () => {
@@ -31,15 +31,15 @@ toggle.addEventListener('click', () => {
     remaining = Math.max(0, Math.ceil((deadline - Date.now()) / 1000));
     stop();
     render();
-    toggle.textContent = 'Resume session ↗';
-    message.textContent = 'Paused. Come back when you are ready.';
+    toggle.textContent = 'Resume session';
+    message.textContent = 'Session paused.';
     return;
   }
   if (remaining === 0) remaining = Number(duration.value);
   deadline = Date.now() + remaining * 1000;
   duration.disabled = true;
   toggle.textContent = 'Pause session';
-  message.textContent = 'One thing at a time. You have this.';
+  message.textContent = 'Session in progress.';
   interval = setInterval(tick, 250);
   tick();
 });
@@ -47,8 +47,8 @@ function restart() {
   stop();
   remaining = Number(duration.value);
   render();
-  toggle.textContent = 'Start session ↗';
-  message.textContent = 'A little uninterrupted time goes a long way.';
+  toggle.textContent = 'Start session';
+  message.textContent = 'Ready when you are.';
 }
 reset.addEventListener('click', restart);
 duration.addEventListener('change', restart);

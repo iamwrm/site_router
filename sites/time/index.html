@@ -3,42 +3,72 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#183c32">
+  <meta name="theme-color" content="#ffffff">
   <title>Time converter · Private sites</title>
+  <link rel="stylesheet" href="../theme.css">
   <link rel="stylesheet" href="./style.css">
   <script type="module" src="./app.mjs"></script>
 </head>
 <body>
-  <header><a href="../" class="brand">Private sites<span aria-hidden="true"> ●</span></a><span class="tag">BROWSER ONLY</span></header>
+  <header>
+    <a class="brand" href="../">Private sites</a>
+    <nav aria-label="Main navigation">
+      <a href="../">Home</a>
+      <a href="../demo/">Demo</a>
+      <a href="./" aria-current="page">Time</a>
+    </nav>
+  </header>
   <main>
-    <section class="intro"><p class="eyebrow">TOOLS / TIME</p><h1>A date. A number.<br>The same <em>moment.</em></h1><p>Convert ISO 8601 dates and Unix timestamps. Nothing leaves your browser.</p><button id="now" class="secondary" type="button">Use current time ↗</button></section>
+    <section class="intro">
+      <h1>Time converter</h1>
+      <p>Convert ISO 8601 dates and Unix timestamps in your browser.</p>
+      <button id="now" class="secondary" type="button">Use current time</button>
+    </section>
     <div class="converters">
-      <form id="iso-form" novalidate>
-        <p class="eyebrow">01 / DATE TO TIMESTAMP</p><h2>Start with ISO</h2>
+      <form id="iso-form" class="panel" novalidate>
+        <h2>ISO to Unix</h2>
         <label for="iso-input">ISO 8601 date</label>
         <input id="iso-input" type="text" spellcheck="false" autocomplete="off" placeholder="2026-01-01T00:00:00.000Z" aria-describedby="iso-hint iso-error" required>
         <p id="iso-hint" class="hint">Include seconds and a timezone: Z for UTC, or an offset like +02:00. Up to 3 fractional digits.</p>
         <p id="iso-error" class="error" role="alert"></p>
-        <button type="submit">Convert ISO → Unix</button>
+        <button type="submit">Convert to Unix</button>
       </form>
-      <form id="unix-form" novalidate>
-        <p class="eyebrow">02 / TIMESTAMP TO DATE</p><h2>Start with Unix</h2>
-        <div class="label-row"><label for="unix-input">Unix timestamp</label><label class="sr-only" for="unit">Timestamp unit</label><select id="unit"><option value="seconds">Seconds</option><option value="milliseconds">Milliseconds</option></select></div>
+      <form id="unix-form" class="panel" novalidate>
+        <h2>Unix to ISO</h2>
+        <div class="label-row">
+          <label for="unix-input">Unix timestamp</label>
+          <label class="sr-only" for="unit">Timestamp unit</label>
+          <select id="unit"><option value="seconds">Seconds</option><option value="milliseconds">Milliseconds</option></select>
+        </div>
         <input id="unix-input" type="text" spellcheck="false" autocomplete="off" placeholder="1767225600" aria-describedby="unix-hint unix-error" required>
         <p id="unix-hint" class="hint">Seconds since 1970-01-01 UTC. Negative values and fractional seconds are supported.</p>
         <p id="unix-error" class="error" role="alert"></p>
-        <button type="submit">Convert Unix → ISO</button>
+        <button type="submit">Convert to ISO</button>
       </form>
     </div>
-    <section class="results" aria-labelledby="results-title"><div class="result-heading"><div><p class="eyebrow">ONE MOMENT, FOUR FORMATS</p><h2 id="results-title">Your result</h2></div><p id="status" role="status">Convert a value to get started.</p></div>
-      <div class="result-row"><label for="result-iso">ISO 8601 · UTC</label><div><input id="result-iso" readonly placeholder="—"><button type="button" data-copy="iso" disabled aria-label="Copy ISO date">Copy</button></div></div>
-      <div class="result-row"><label for="result-seconds">Unix seconds</label><div><input id="result-seconds" readonly placeholder="—"><button type="button" data-copy="seconds" disabled aria-label="Copy Unix seconds">Copy</button></div></div>
-      <div class="result-row"><label for="result-milliseconds">Unix milliseconds</label><div><input id="result-milliseconds" readonly placeholder="—"><button type="button" data-copy="milliseconds" disabled aria-label="Copy Unix milliseconds">Copy</button></div></div>
-      <div class="result-row"><label for="result-local">Your browser's timezone</label><div><input id="result-local" readonly placeholder="—"><button type="button" data-copy="local" disabled aria-label="Copy local date">Copy</button></div></div>
+    <section class="results" aria-labelledby="results-title">
+      <h2 id="results-title">Result</h2>
+      <p id="status" class="hint" role="status">Convert a value to get started.</p>
+      <div class="result-row">
+        <label for="result-iso">ISO 8601 · UTC</label>
+        <div><input id="result-iso" readonly placeholder="No result"><button class="secondary" type="button" data-copy="iso" disabled aria-label="Copy ISO date">Copy</button></div>
+      </div>
+      <div class="result-row">
+        <label for="result-seconds">Unix seconds</label>
+        <div><input id="result-seconds" readonly placeholder="No result"><button class="secondary" type="button" data-copy="seconds" disabled aria-label="Copy Unix seconds">Copy</button></div>
+      </div>
+      <div class="result-row">
+        <label for="result-milliseconds">Unix milliseconds</label>
+        <div><input id="result-milliseconds" readonly placeholder="No result"><button class="secondary" type="button" data-copy="milliseconds" disabled aria-label="Copy Unix milliseconds">Copy</button></div>
+      </div>
+      <div class="result-row">
+        <label for="result-local">Browser timezone</label>
+        <div><input id="result-local" readonly placeholder="No result"><button class="secondary" type="button" data-copy="local" disabled aria-label="Copy local date">Copy</button></div>
+      </div>
     </section>
     <p class="footnote">Millisecond precision. ISO output is always UTC. Timezone-free dates, leap seconds, and invalid calendar dates are rejected.</p>
     <noscript><p class="error">Enable JavaScript to use the converter. All conversion happens locally.</p></noscript>
   </main>
-  <footer><a href="../">← All sites</a><span>Private HTTPS · Served by Caddy</span></footer>
+  <footer><span>Runs in your browser.</span><span>Private HTTPS</span></footer>
 </body>
 </html>
