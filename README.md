@@ -4,6 +4,7 @@ Static websites served by Caddy with private HTTPS and Basic Authentication on e
 
 - Homepage: https://localhost:8443/
 - Demo: https://localhost:8443/demo/
+- Time converter: https://localhost:8443/time/
 - Username: `admin`
 
 Listeners are loopback-only. HTTP on port `8080` redirects to HTTPS. No DNS changes needed for localhost.
@@ -60,6 +61,12 @@ Firefox may require a separate certificate import. `XDG_DATA_HOME` can override 
 ## Add a site
 
 Create `sites/example/index.html` with relative assets, then visit `/example/`. On the VPS, use `/srv/sites/example/index.html`. No routing changes, extra ports, or reload needed. Edit `sites/index.html` to add a homepage link. Keep secrets and symlinks to private files outside the web root.
+
+## Time converter
+
+`/time/` converts ISO 8601 dates with explicit timezones and Unix timestamps in seconds or milliseconds. Includes UTC and local output, copy buttons, and current-time capture. All conversion runs in the browser with millisecond precision.
+
+Run conversion tests with `node --test tests/time.test.mjs`. Node is only needed for tests, not serving the site.
 
 ## Change credentials and verify
 

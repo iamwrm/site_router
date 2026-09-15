@@ -25,7 +25,9 @@ def request(path, credentials=None, https=True, host='localhost'):
     conn.close()
     return result
 
-paths = ['/', '/demo/', '/demo/index.html', '/demo/style.css', '/demo/app.js', '/missing', '/demo', '/.git/config']
+time_files = ['index.html', 'style.css', 'app.mjs', 'convert.mjs']
+paths = ['/', '/demo/', '/demo/index.html', '/demo/style.css', '/demo/app.js', '/missing', '/demo', '/.git/config', '/time', '/time/']
+paths += ['/time/' + file for file in time_files]
 for path in paths:
     for label, credentials in [('anonymous', None), ('incorrect', 'admin:incorrect-test-password')]:
         status, headers, body = request(path, credentials)
@@ -33,13 +35,21 @@ for path in paths:
         assert 'Www-Authenticate' in headers or 'WWW-Authenticate' in headers, headers
         print(f'PASS {label:10} {path:20} 401')
 
-for path, file in [('/', 'index.html'), ('/demo/', 'demo/index.html'), ('/demo/index.html', 'demo/index.html'), ('/demo/style.css', 'demo/style.css'), ('/demo/app.js', 'demo/app.js')]:
+served_files = [('/', 'index.html'), ('/demo/', 'demo/index.html'), ('/demo/index.html', 'demo/index.html'), ('/demo/style.css', 'demo/style.css'), ('/demo/app.js', 'demo/app.js'), ('/time/', 'time/index.html')]
+served_files += [('/time/' + file, 'time/' + file) for file in time_files]
+for path, file in served_files:
     status, headers, body = request(path, 'admin:' + password)
     assert status == 200, (path, status)
     assert body == (SITES / file).read_bytes(), path
+    if file.endswith('.mjs'):
+        assert headers['Content-Type'].split(';')[0] in ['text/javascript', 'application/javascript'], headers
     print(f'PASS authorized {path:20} 200, exact file match, CA-verified TLS')
 
-for path in ['/', '/demo/', '/demo/style.css', '/demo/app.js', '/missing?x=1']:
+status, headers, _ = request('/time', 'admin:' + password)
+assert status == 308 and headers['Location'] == '/time/', (status, headers)
+print('PASS /time redirects to /time/ after authentication')
+
+for path in ['/', '/demo/', '/demo/style.css', '/demo/app.js', '/time', '/time/', '/time/app.mjs', '/missing?x=1']:
     status, headers, body = request(path, https=False)
     assert status == 308, (path, status)
     assert headers['Location'] == 'https://localhost:8443' + path, headers
