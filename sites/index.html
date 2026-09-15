@@ -6,14 +6,13 @@
   <meta name="theme-color" content="#ffffff">
   <title>Private sites</title>
   <link rel="stylesheet" href="./theme.css">
+  <script src="./app.js" defer></script>
 </head>
 <body>
   <header>
     <a class="brand" href="./">Private sites</a>
     <nav aria-label="Main navigation">
       <a href="./" aria-current="page">Home</a>
-      <a href="./demo/">Demo</a>
-      <a href="./time/">Time</a>
     </nav>
   </header>
   <main>
@@ -21,10 +20,16 @@
       <h1>Sites</h1>
       <p>A collection of small, private web tools.</p>
     </section>
-    <ul class="site-list">
+    <div class="site-search" role="search" hidden>
+      <label for="site-search">Search sites</label>
+      <input id="site-search" type="search" placeholder="Search by name, description, or path" autocomplete="off" aria-controls="site-list">
+      <p id="search-status" class="hint" role="status"></p>
+    </div>
+    <ul id="site-list" class="site-list">
       <li><a href="./demo/"><h2>Focus timer</h2><p>A simple timer with 5, 15, and 25 minute sessions.</p></a></li>
       <li><a href="./time/"><h2>Time converter</h2><p>Convert ISO 8601 dates and Unix timestamps in seconds or milliseconds.</p></a></li>
     </ul>
+    <p id="search-empty" class="hint" hidden>No sites match your search.</p>
   </main>
   <footer><span>Static sites served by Caddy.</span><span>Private HTTPS</span></footer>
 </body>

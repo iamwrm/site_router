@@ -48,6 +48,11 @@ input[aria-invalid="true"] { border-color: var(--error); }
 .hint, .footnote, .error { font-size: 12px; }
 .error { color: var(--error); }
 .panel { border: 1px solid var(--border); border-radius: 6px; padding: 24px; }
+.site-search { margin-bottom: 20px; }
+.site-search label { display: block; margin-bottom: 8px; }
+.site-search input { width: 100%; font-family: inherit; }
+.site-search .hint { margin: 8px 0 0; }
+#search-empty { margin-top: 20px; }
 .site-list { list-style: none; padding: 0; margin: 0; border-top: 1px solid var(--border); }
 .site-list li { border-bottom: 1px solid var(--border); }
 .site-list a { display: block; padding: 22px 12px; text-decoration: none; }
