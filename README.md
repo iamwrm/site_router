@@ -5,6 +5,7 @@ Static websites served by Caddy with private HTTPS and Basic Authentication on e
 - Homepage: https://localhost:8443/
 - Demo: https://localhost:8443/demo/
 - Time converter: https://localhost:8443/time/
+- Chinese input: https://localhost:8443/chinese/
 - Username: `admin`
 
 Listeners are loopback-only. HTTP on port `8080` redirects to HTTPS. No DNS changes needed for localhost.
@@ -67,6 +68,27 @@ Create `sites/example/index.html` with relative assets, then visit `/example/`. 
 `/time/` converts ISO 8601 dates with explicit timezones and Unix timestamps in seconds or milliseconds. Includes UTC and local output, copy buttons, and current-time capture. All conversion runs in the browser with millisecond precision.
 
 Run conversion tests with `node --test tests/time.test.mjs`. Node is only needed for tests, not serving the site.
+
+## Chinese input
+
+`/chinese/` is a plain HTML/CSS/JavaScript page for typing Pinyin, selecting
+simplified Chinese characters, and copying the result. Space chooses the first
+candidate, number keys choose others, `−` / `=` change pages, and Escape cancels
+the current Pinyin. Turn off **拼音** for direct English or system input.
+
+The page vendors the standalone Rime WebAssembly engine and compiled Chinese
+dictionary from [iamwrm/web_input](https://github.com/iamwrm/web_input/tree/6de9fc163f4ac263cd85c12accb04cc6a6af93f5).
+No framework, build step, Node runtime, CDN, or external conversion service is
+needed. Roughly 11 MB of local engine/dictionary assets load when opening the
+page. Typed text stays in the current browser page; it is not uploaded or saved.
+Source and license notices are in `sites/chinese/THIRD_PARTY_NOTICES.md`.
+
+Only `/chinese/` and its assets receive a CSP allowing same-origin `fetch` and
+WebAssembly compilation (`'wasm-unsafe-eval'`). JavaScript `eval`, inline scripts,
+and external requests remain disallowed. Every file still requires the same
+Basic Authentication, and the other tools retain their original policy.
+Restart `run.sh` after pulling this change, or validate and reload the installed
+Caddyfile on a systemd deployment, so the new CSP takes effect.
 
 ## Change credentials and verify
 

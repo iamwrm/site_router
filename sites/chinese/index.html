@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="zh-CN">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="输入拼音，选择汉字，复制文字。无需安装，文字只在浏览器中处理。">
+<title>中文输入</title>
+<link rel="icon" href="favicon.svg">
+<link rel="stylesheet" href="style.css">
+<script src="app.js" defer></script>
+<main>
+  <header>
+    <h1>中文输入</h1>
+    <div class="actions">
+      <label><input id="pinyin" type="checkbox" checked> 拼音</label>
+      <button id="clear" type="button">清空</button>
+      <button id="copy" class="primary" type="button">复制</button>
+    </div>
+  </header>
+  <div class="editor">
+    <section id="composition" aria-label="拼音候选" hidden>
+      <div class="candidate-heading"><span id="preedit"></span><div><button id="previous" type="button" aria-label="上一页候选">←</button><button id="next" type="button" aria-label="下一页候选">→</button></div></div>
+      <div id="candidates" aria-label="候选词"></div>
+    </section>
+    <textarea id="text" aria-label="输入文字" aria-describedby="help" placeholder="输入拼音，例如 nihao → 你好" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off" readonly></textarea>
+  </div>
+  <p id="status" role="status">正在加载拼音词库…</p>
+  <p id="help">空格选字 · 数字选词 · − / = 翻页 · Esc 取消<br>关闭拼音可直接输入英文，或使用系统输入法。</p>
+  <footer><a href="../">所有工具</a> · 文字只在当前页面处理，不上传、不保存。</footer>
+  <noscript>请启用 JavaScript 以使用拼音和复制按钮。</noscript>
+</main>
+</html>

@@ -26,8 +26,10 @@ def request(path, credentials=None, https=True, host='localhost'):
     return result
 
 time_files = ['index.html', 'style.css', 'app.mjs', 'convert.mjs']
+chinese_files = sorted(path.relative_to(SITES).as_posix() for path in (SITES / 'chinese').rglob('*') if path.is_file())
 paths = ['/', '/app.js', '/theme.css', '/demo/', '/demo/index.html', '/demo/style.css', '/demo/app.js', '/missing', '/demo', '/.git/config', '/time', '/time/']
 paths += ['/time/' + file for file in time_files]
+paths += ['/chinese', '/chinese/'] + ['/' + file for file in chinese_files]
 for path in paths:
     for label, credentials in [('anonymous', None), ('incorrect', 'admin:incorrect-test-password')]:
         status, headers, body = request(path, credentials)
@@ -37,19 +39,34 @@ for path in paths:
 
 served_files = [('/', 'index.html'), ('/app.js', 'app.js'), ('/theme.css', 'theme.css'), ('/demo/', 'demo/index.html'), ('/demo/index.html', 'demo/index.html'), ('/demo/style.css', 'demo/style.css'), ('/demo/app.js', 'demo/app.js'), ('/time/', 'time/index.html')]
 served_files += [('/time/' + file, 'time/' + file) for file in time_files]
+served_files += [('/chinese/', 'chinese/index.html')] + [('/' + file, file) for file in chinese_files]
 for path, file in served_files:
     status, headers, body = request(path, 'admin:' + password)
     assert status == 200, (path, status)
     assert body == (SITES / file).read_bytes(), path
     if file.endswith('.mjs'):
         assert headers['Content-Type'].split(';')[0] in ['text/javascript', 'application/javascript'], headers
+    if file.endswith('.wasm'):
+        assert headers['Content-Type'].split(';')[0] == 'application/wasm', headers
+    policy = headers.get('Content-Security-Policy', '')
+    if path.startswith('/chinese/'):
+        assert "script-src 'self' 'wasm-unsafe-eval'" in policy, (path, policy)
+        assert "connect-src 'self'" in policy, (path, policy)
+    else:
+        assert "'wasm-unsafe-eval'" not in policy, (path, policy)
+        assert "connect-src 'none'" in policy, (path, policy)
+    assert "'unsafe-eval'" not in policy and "'unsafe-inline'" not in policy, (path, policy)
     print(f'PASS authorized {path:20} 200, exact file match, CA-verified TLS')
 
 status, headers, _ = request('/time', 'admin:' + password)
 assert status == 308 and headers['Location'] == '/time/', (status, headers)
 print('PASS /time redirects to /time/ after authentication')
 
-for path in ['/', '/app.js', '/theme.css', '/demo/', '/demo/style.css', '/demo/app.js', '/time', '/time/', '/time/app.mjs', '/missing?x=1']:
+status, headers, _ = request('/chinese', 'admin:' + password)
+assert status == 308 and headers['Location'] == '/chinese/', (status, headers)
+print('PASS /chinese redirects to /chinese/ after authentication')
+
+for path in ['/', '/app.js', '/theme.css', '/demo/', '/demo/style.css', '/demo/app.js', '/time', '/time/', '/time/app.mjs', '/chinese', '/chinese/', '/chinese/vendor/rime.wasm', '/missing?x=1']:
     status, headers, body = request(path, https=False)
     assert status == 308, (path, status)
     assert headers['Location'] == 'https://localhost:8443' + path, headers

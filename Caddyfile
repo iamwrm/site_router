@@ -20,8 +20,12 @@ https://localhost:8443 {
 		X-Content-Type-Options nosniff
 		Referrer-Policy no-referrer
 		Cache-Control "no-store"
-		Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'"
 	}
+	# Only the Chinese input page needs local dictionary fetches and WebAssembly.
+	@chinese path /chinese /chinese/*
+	@other not path /chinese /chinese/*
+	header @chinese Content-Security-Policy "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self'; img-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'"
+	header @other Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'"
 	file_server
 }
 
